@@ -5,13 +5,9 @@ function select(el, id) {
   if (!active) {
 	  el.addClass("active");
   }
-
-  // Resize all widgets
-  setTimeout(resizeAllWidgets, 50)
 }
 
 function resizeAllWidgets() {
-  console.log("glop glop");
   var widgets = HTMLWidgets.findAll(document, ".mw-chart>.html-widget");
   var ids = $.map($(".mw-chart>.html-widget"), function(x, i) {return x.id});
   var container;
@@ -24,3 +20,16 @@ function resizeAllWidgets() {
 	  }
   }
 }
+
+var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutationRecord) {
+        resizeAllWidgets();
+    });
+});
+
+document.onreadystatechange = function() {
+  var target = document.getElementsByClassName('mw-input-container');
+  for (var i = 0; i < target.length; i++) {
+    observer.observe(target[i], { attributes : true, attributeFilter : ['style'] });
+  }
+};
